@@ -1,5 +1,5 @@
-import { PrimaryColumn,Entity, Column } from "typeorm";
-
+import { PrimaryColumn,Entity, Column, Exclusion } from "typeorm";
+import { Exclude } from 'class-transformer';
 @Entity()
 export class Auth {
 
@@ -11,4 +11,8 @@ export class Auth {
 
     @Column()
     nickname : string
+
+    @Column({ nullable : true })
+    @Exclude()
+    currentHashedRefreshToken? : string
 }
