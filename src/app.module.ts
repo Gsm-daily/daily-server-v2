@@ -11,7 +11,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
       host: "localhost",
       port: 3306,
       username: "root",
-      password: "kimsunggil2005!",
+      password: process.env.Password,
       database: "daily",
       entities: ["dist/**/*.entity{.ts,.js}"],
       synchronize: false
