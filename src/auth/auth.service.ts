@@ -84,4 +84,9 @@ export class AuthService {
                 Number(this.configSevice.get('JWT_ACCESS_TOKEN__EXPIRATION_TIME')) * 1000,
         }
     }
+
+    getCookieWithJwtRefreshToken(email : string, username : string){
+        const payload = { email, username };
+
+    }
 }          
