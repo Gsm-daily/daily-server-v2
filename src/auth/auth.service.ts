@@ -88,5 +88,14 @@ export class AuthService {
     getCookieWithJwtRefreshToken(email : string, username : string){
         const payload = { email, username };
 
+        const Token = this.jwtService.sign(payload, {
+            secret : this.configSevice.get('JWT_REFRESH_TOKEN'),
+            expiresIn : `${this.configSevice.get('JWT_FRESH_TOKEN_EXPIRATION_TIME')}s`
+        })
+
+        return {
+            
+        }
+
     }
 }          
