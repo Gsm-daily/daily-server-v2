@@ -5,6 +5,7 @@ import { Auth } from "src/entity/auth.entity";
 import { InjectRepository } from '@nestjs/typeorm';
 import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
+import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class AuthService {
@@ -12,6 +13,7 @@ export class AuthService {
         @InjectRepository(Auth)
         private authRepository : Repository<Auth>,  
         private jwtService : JwtService,
+        private configSevice : ConfigService,
     ){}
 
     //email, pw, name 찾기
@@ -58,21 +60,28 @@ export class AuthService {
             throw new UnauthorizedException('이메일과 비밀번호를 확인해 주세요.');
         }
 
-        const payload = { email : userDTO.email, username : userDTO.nickname}; //sub은 토큰 제목
+        const payload1 = { email : userDTO.email, username : userDTO.username}; //sub은 토큰 제목
 
         return {
-            Token : this.jwtService.sign(payload),
+            Token : this.jwtService.sign(payload1),
         };
     }
 
-    // async EmailReceive(userDTO : {email: string}): Promise<void> {
-    //     console.log('2',userDTO.email);
-    //         //const number : number = generateRandom(111111, 999999)
-    //     await this.mailerService.sendMail({
-    //         to : "jswa7308@naver.com",
-    //         from : 'sunggil0125@naver.com',
-    //         subject : 'test',
-    //         text : '성공해부렸다.'
-    //     });
-    // }
+    getCookieWithJwtAccessToken(email : string, username : string){
+        const payload = { email, username };
+
+        const Token = this.jwtService.sign(payload, {
+            secret : this.configSevice.get<string>('JWT_ACCESS_TOKEN'),
+            expiresIn : `${this.configSevice.get('JWT_ACCCESS_TOKEN_EXPIRATION_TIME')}s`
+        })
+
+        return {
+            accessToken : Token,
+            domain : `localhost`,
+            path : '/',
+            httpOnly : true,
+            maxAge :
+                Number(this.configSevice.get('JWT_ACCESS_TOKEN__EXPIRATION_TIME')) * 1000,
+        }
+    }
 }          
